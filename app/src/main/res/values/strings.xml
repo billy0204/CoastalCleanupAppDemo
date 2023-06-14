@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">USJProjectDemo</string>
+    <string name="ISE">Institute of Science and Environment</string>
+    <string name="create_text1">Create new activity</string>
+    <string name="create_text2">Organizers</string>
+    <string name="create_text3">Pick a date</string>
+    <string name="create_text4">Pick a time</string>
+    <string name="create_text5">Name of the activity</string>
+    <string name="create_text6">Pick a location</string>
+    <string name="create_text7">Create</string>
+    <string name="create_text8">Cancel</string>
+    <string name="create_text9">Name of the location</string>
+
+
+    <string name="edit_text1">Edit activity</string>
+
+    <string name="calendarDescription">A calendar icon</string>
+    <string name="locationMarkerDescription">A location marker icon</string>
+
+    <string name="crossBtnDescription">A cross icon</string>
+    <string name="cancelButtonText">Cancel</string>
+    <string name="createButtonText">Create</string>
+    <string name="ActivityNameInputHint">Type name of the activity here...</string>
+    <string name="locationNameInputHint">Type name of the location here...</string>
+
+    <string name="title_activity_map_picker">MapPicker</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>

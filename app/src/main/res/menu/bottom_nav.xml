@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:icon="@drawable/baseline_groups_24"
+        android:id="@+id/organizerNav"
+        android:title="Organizer" />
+    <item
+        android:icon="@drawable/baseline_calendar_month_24_g"
+        android:id="@+id/ScheduleNav"
+        android:title="Schedule" />
+    <item
+        android:icon="@drawable/baseline_document_scanner_24"
+        android:id="@+id/collectionNav"
+        android:title="Collection" />
+    <item
+        android:icon="@drawable/baseline_map_24"
+        android:id="@+id/mapNav"
+        android:title="Map" />
+</menu>
