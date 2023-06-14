@@ -24,10 +24,10 @@ class ActivityCardAdapter(private val context: Context) :
     private val activityItems = mutableListOf<ActivityItem>()
 
     class ActivityCardHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val previewMap = itemView.findViewById<ImageView>(R.id.previewMap)
-        val title = itemView.findViewById<TextView>(R.id.titleText)
-        val location = itemView.findViewById<TextView>(R.id.locationText)
-        val time = itemView.findViewById<TextView>(R.id.timeText)
+        val previewMap: ImageView = itemView.findViewById(R.id.previewMap)
+        val title: TextView = itemView.findViewById(R.id.titleText)
+        val location: TextView = itemView.findViewById(R.id.locationText)
+        val time: TextView = itemView.findViewById(R.id.timeText)
 
     }
 

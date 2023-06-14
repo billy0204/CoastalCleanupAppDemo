@@ -12,9 +12,6 @@ class ActivityRepository {
     private val database = FirebaseDatabase.getInstance()
     private val myRef = database.getReference("ISE")
 
-    init {
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
-    }
 
     fun fetchActivity(liveData: MutableLiveData<List<ActivityItem>>){
         Log.d("test","fetchActivity")
