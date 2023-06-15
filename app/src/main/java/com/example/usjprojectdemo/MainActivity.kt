@@ -5,6 +5,10 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.usjprojectdemo.Data.DataViewModel
+import com.example.usjprojectdemo.Fragments.CollectionFragment
+import com.example.usjprojectdemo.Fragments.OrganizerFragment
+import com.example.usjprojectdemo.Fragments.ScheduleFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 import com.google.firebase.database.*
@@ -21,14 +25,17 @@ class MainActivity : AppCompatActivity() {
         val viewModel = ViewModelProvider(this)[DataViewModel::class.java]
         viewModel.fetchActivity()
 
-        val organizer = OrganizerFragment()
+        val organizerFragment = OrganizerFragment()
         val scheduleFragment = ScheduleFragment()
+        val collectionFragment = CollectionFragment()
+
 
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
         bottomNavigation.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.organizerNav -> makeCurrentFragment(organizer)
+                R.id.organizerNav -> makeCurrentFragment(organizerFragment)
                 R.id.ScheduleNav -> makeCurrentFragment(scheduleFragment)
+                R.id.collectionNav -> makeCurrentFragment(collectionFragment)
 
                 else -> {}
             }
@@ -37,7 +44,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        makeCurrentFragment(organizer)
+        makeCurrentFragment(organizerFragment)
     }
 
     private fun makeCurrentFragment(fragment: Fragment) {

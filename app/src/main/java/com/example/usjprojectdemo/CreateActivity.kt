@@ -5,7 +5,6 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.*
 import android.util.Log
 import android.view.View
@@ -15,8 +14,8 @@ import android.widget.TextView
 import android.widget.TimePicker
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.loader.content.AsyncTaskLoader
 import com.bumptech.glide.Glide
+import com.example.usjprojectdemo.Data.ActivityItem
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
@@ -24,7 +23,6 @@ import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import java.io.ByteArrayOutputStream
 import java.io.IOException
-import java.net.URL
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.util.*
