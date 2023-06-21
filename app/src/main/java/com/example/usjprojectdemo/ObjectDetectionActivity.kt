@@ -1,28 +1,116 @@
 package com.example.usjprojectdemo
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.util.Log
+import android.view.Display.Mode
+import android.view.MotionEvent
+import android.view.View
+import android.view.View.OnClickListener
+import android.view.View.OnTouchListener
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.usjprojectdemo.ml.LiteModelObjectDetectionMobileObjectLocalizerV11Metadata2
+import com.example.usjprojectdemo.ml.MobileFp16
 import com.example.usjprojectdemo.ml.SsdMobilenetV11Metadata1
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.support.image.TensorImage
 
 
-class ObjectDetectionActivity : AppCompatActivity() {
+class ObjectDetectionActivity : AppCompatActivity(), OnTouchListener, OnClickListener {
+    lateinit var imageView: ImageView;
+    lateinit var tempImageView: ImageView;
+    private val detectedObjects = ArrayList<Rect>()
+    private var startPoint: PointF? = null
+    private var endPoint: PointF? = null
+    private var tempBitmap: Bitmap? = null
+    private lateinit var mutableBitmap: Bitmap
+    private val paint = Paint()
 
-    lateinit var textView: TextView
-    lateinit var imageView: ImageView
+    init {
+        paint.color = Color.RED
+        paint.isAntiAlias = true
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 10f
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_object_detection)
 
-        textView = findViewById(R.id.tvPlaceholder)
         imageView = findViewById(R.id.imageView)
+        tempImageView = findViewById(R.id.tempImageview)
+        val original = BitmapFactory.decodeResource(resources, R.drawable.bottle_02)
 
-        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.dog_cat)
+        val display = windowManager.defaultDisplay
+        val size = Point()
+        display.getSize(size)
 
-        classifyImage(bitmap)
+        val bitmap = Bitmap.createScaledBitmap(original, size.x, size.y, false)
+        objectDetection(bitmap)
+
+
+        val fileName = "testBitmap.png"
+        CoroutineScope(Dispatchers.IO).launch {
+            val fos = openFileOutput(fileName, Context.MODE_PRIVATE)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            fos.close();
+        }
+
+        findViewById<Button>(R.id.nextButton).setOnClickListener(this)
+        findViewById<Button>(R.id.okButton).setOnClickListener(this)
+
+        tempImageView.setOnTouchListener(this)
+    }
+
+
+    private fun drawToTempView() {
+        if (tempBitmap == null) {
+            tempBitmap = Bitmap.createBitmap(
+                tempImageView.width,
+                tempImageView.height,
+                Bitmap.Config.ARGB_8888
+            )
+        }
+        val canvas = Canvas(tempBitmap!!)
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        var paint = Paint()
+        paint.color = Color.GREEN
+        paint.isAntiAlias = true
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 8f
+
+        canvas.drawRect(startPoint!!.x, startPoint!!.y, endPoint!!.x, endPoint!!.y, paint)
+        Log.d("draw", startPoint.toString() + "_" + endPoint.toString())
+        tempImageView.setImageBitmap(tempBitmap)
+    }
+
+    private fun clearTempView() {
+        val canvas = Canvas(tempBitmap!!)
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
+        tempImageView.setImageBitmap(tempBitmap)
+
+    }
+
+    private fun drawToImage() {
+        val rect = Rect(
+            startPoint!!.x.toInt(),
+            startPoint!!.y.toInt(),
+            endPoint!!.x.toInt(),
+            endPoint!!.y.toInt()
+        )
+        val canvas = Canvas(mutableBitmap)
+        canvas.drawRect(rect, paint)
+        detectedObjects.add(rect)
+
     }
 
     private fun classifyImage(bitmap: Bitmap) {
@@ -77,10 +165,6 @@ class ObjectDetectionActivity : AppCompatActivity() {
         }
 
 
-//        textView.text =
-//            "Number of object detected: " + numberOfDetections.floatArray.get(0).toString()
-
-
         val rect = rectList.get(0)
 
         val resizedBmp: Bitmap =
@@ -91,12 +175,128 @@ class ObjectDetectionActivity : AppCompatActivity() {
                 rect.width(),
                 rect.height()
             )
-        imageView.setImageBitmap(mutableBitmap)
-
 
 // Releases model resources if no longer used.
         model.close()
     }
 
+
+    private fun classifyModel2(bitmap: Bitmap) {
+        val model = LiteModelObjectDetectionMobileObjectLocalizerV11Metadata2.newInstance(this)
+
+// Creates inputs for reference.
+        val image = TensorImage.fromBitmap(bitmap)
+        val mutableBitmap: Bitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+
+        var paint = Paint()
+        paint.color = Color.RED
+        paint.isAntiAlias = true
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = 10f
+
+        val canvas = Canvas(mutableBitmap)
+
+// Runs model inference and gets result.
+        val outputs = model.process(image)
+
+        for (detectionResult in outputs.detectionResultList) {
+            val location = detectionResult.locationAsRectF;
+            val category = detectionResult.categoryAsString;
+            val score = detectionResult.scoreAsFloat;
+
+            if (score > 0.5) {
+                canvas.drawRect(location, paint)
+            }
+        }
+
+
+// Releases model resources if no longer used.
+        model.close()
+
+    }
+
+    private fun objectDetection(bitmap: Bitmap) {
+        val model = LiteModelObjectDetectionMobileObjectLocalizerV11Metadata2.newInstance(this)
+        val image = TensorImage.fromBitmap(bitmap)
+        mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true)
+
+
+        val canvas = Canvas(mutableBitmap)
+
+        val outputs = model.process(image)
+        for (detectionResult in outputs.detectionResultList) {
+            val location = detectionResult.locationAsRectF;
+            val score = detectionResult.scoreAsFloat;
+            Log.d("model",score.toString())
+            if (score > 0.4) {
+                canvas.drawRect(location, paint)
+
+                val rect = Rect()
+                location.round(rect)
+                detectedObjects.add(rect)
+            }
+        }
+        model.close()
+        imageView.setImageBitmap(mutableBitmap)
+
+    }
+
+
+    private fun testModel2(bitmap: Bitmap) {
+        val model = MobileFp16.newInstance(this)
+
+// Creates inputs for reference.
+        val image = TensorImage.fromBitmap(bitmap)
+
+// Runs model inference and gets result.
+        val outputs = model.process(image)
+        val probability = outputs.probabilityAsCategoryList
+        Log.d("model", probability.toString())
+// Releases model resources if no longer used.
+        model.close()
+    }
+
+    override fun onTouch(view: View?, event: MotionEvent?): Boolean {
+        if (view!!.id == R.id.tempImageview) {
+            when (event!!.action) {
+
+                MotionEvent.ACTION_DOWN -> {
+                    startPoint = PointF(event.x, event.y)
+                    endPoint = PointF()
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    endPoint!!.x = event.x
+                    endPoint!!.y = event.y
+                    drawToTempView()
+                }
+                MotionEvent.ACTION_UP -> {
+                    endPoint!!.x = event.x
+                    endPoint!!.y = event.y
+                    drawToTempView()
+                }
+            }
+            return true
+        }
+
+        return false
+    }
+
+    override fun onClick(view: View?) {
+        if (view!!.id == R.id.okButton) {
+            drawToImage()
+            clearTempView()
+
+        } else if (view!!.id == R.id.nextButton) {
+            //TODO: set filename programmatically
+            val fileName = "testBitmap.png"
+
+            val intent = Intent(this, ObjectClassificationActivity::class.java)
+
+            intent.putParcelableArrayListExtra("detectedRectangles", detectedObjects)
+            intent.putExtra("bitmap", fileName)
+
+            startActivity(intent)
+        }
+    }
 
 }
