@@ -9,6 +9,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.example.usjprojectdemo.ObjectDetectionActivity
 import com.example.usjprojectdemo.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
 class CollectionFragment : Fragment() {
@@ -27,7 +28,7 @@ class CollectionFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_collection, container, false)
 
-        view.findViewById<Button>(R.id.TestButton).setOnClickListener{
+        view.findViewById<FloatingActionButton>(R.id.floatingButton).setOnClickListener{
             val intent = Intent(getActivity(), ObjectDetectionActivity::class.java)
             startActivity(intent)
         }

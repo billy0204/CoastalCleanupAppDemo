@@ -52,7 +52,7 @@
             android:text="2023.06.05"/>
 
         <androidx.cardview.widget.CardView
-            android:layout_width="320dp"
+            android:layout_width="match_parent"
             android:layout_height="210dp"
             android:backgroundTint="@color/LightBlue"
             app:cardCornerRadius="15dp">
