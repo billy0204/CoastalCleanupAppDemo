@@ -1,6 +1,7 @@
 package com.example.usjprojectdemo.Fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -74,32 +75,30 @@ class ScheduleFragment : Fragment(), UserActivityCardAdapter.JoinedChangeListene
         val ref = database.getReference("users").child(UserData.user.id)
             .child("JoinedActivities")
 
-        ref.addValueEventListener(object : ValueEventListener {
+        val listener = ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                val joinedActivities = snapshot.children.map { dataSnapshot ->
-                    dataSnapshot.getValue(JoinedActivity::class.java)
-                }
-                if (joinedActivities.size > 0) {
-                    for (i in 0..joinedActivities.size - 1) {
-                        if (joinedActivities[i]!!.id == ID) {
-                            ref.child(joinedActivities[i]!!.id!!).removeValue()
-                            exist = true
-                        }
+                for (snap in snapshot.children) {
+                    val joined = snap.getValue(JoinedActivity::class.java)
+                    Log.d("firebasetest", snap.key.toString())
+                    if (!exist && joined!!.id == ID) {
+                        ref.removeEventListener(this)
+                        ref.child(snap.key!!).removeValue()
+                        exist = true
                     }
                 }
+                if (exist == false) {
+                    val joined = JoinedActivity()
+                    joined.id = ID
+                    ref.push().setValue(joined)
+                }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
             }
 
         })
 
-        if (!exist) {
-            val joined = JoinedActivity()
-            joined.id = ID
-            ref.push().setValue(joined)
-        }
     }
 
 }
