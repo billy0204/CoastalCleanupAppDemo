@@ -13,14 +13,12 @@ class ActivityRepository {
 
 
     fun fetchActivity(liveData: MutableLiveData<List<ActivityItem>>){
-        Log.d("test","fetchActivity")
 
         myRef.addValueEventListener(object :ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 val activityItem: List<ActivityItem> = snapshot.children.map { dataSnapshot ->
                     dataSnapshot.getValue(ActivityItem::class.java)!!
                 }
-                Log.d("test",snapshot.toString())
                 liveData.postValue(activityItem)
             }
 

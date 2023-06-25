@@ -9,10 +9,9 @@ data class UserData(
     var workingHour: Int? =null,
     var pickedNumber: Int? =null,
     var collectedPoint: Int? =null,
-    var joinedActivities:ArrayList<ActivityDataForUser> = ArrayList<ActivityDataForUser>()
 ){
     companion object{
-        val user:UserData = UserData()
+        var user:UserData = UserData()
         val currentActivityID:String = "1686618882136";
         var randomID = getRandomId()
         fun getRandomId(): String? {

@@ -8,6 +8,5 @@ data class PredictedImage(
     ){
     companion object{
         var currentImage: PredictedImage? = null
-
     }
 }

@@ -1,7 +1,7 @@
 package com.example.usjprojectdemo.Data
 
 data class ActivityItem(
-    var id: Long? = null,
+    var id: String? = null,
     var activity_name: String? = null,
     var location_name: String? = null,
     var date: String? = null,
@@ -9,5 +9,5 @@ data class ActivityItem(
     var end_time: String? = null,
     var latitude: Double = 0.0,
     var longitude: Double = 0.0,
-    var collaborate: List<String?>? = null
+    var collaborate: List<String?>? = null,
 )

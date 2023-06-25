@@ -71,15 +71,13 @@ class OrganizerFragment : Fragment() {
     }
 
 
-
-
-    private fun initRecycleCardView(view:View) {
+    private fun initRecycleCardView(view: View) {
 
         viewPager = view.findViewById(R.id.pageForActivityCard)
         val adapter = ActivityCardAdapter(requireContext())
 
         viewPager.adapter = adapter
-        viewModel.activityItemLiveData.observe(viewLifecycleOwner){items->
+        viewModel.activityItemLiveData.observe(viewLifecycleOwner) { items ->
             adapter.setItems(items)
         }
 

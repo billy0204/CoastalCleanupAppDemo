@@ -16,6 +16,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.usjprojectdemo.Data.ActivityItem
+import com.example.usjprojectdemo.Data.UserData
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
@@ -112,7 +113,7 @@ class CreateActivity : AppCompatActivity() {
     private fun saveActivity() {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference("ISE")
-        activity?.id = Instant.now().toEpochMilli()
+        activity?.id = UserData.getRandomId()
         myRef.child(activity?.id.toString())
             .setValue(activity)
 

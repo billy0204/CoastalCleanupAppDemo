@@ -1,16 +1,22 @@
 package com.example.usjprojectdemo.Data
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.ktx.Firebase
 
 class DataViewModel : ViewModel() {
 
     private val _activityItemLiveData = MutableLiveData<List<ActivityItem>>()
-    private val _joindedData = MutableLiveData<List<UserData>>()
-
     val activityItemLiveData: LiveData<List<ActivityItem>> = _activityItemLiveData
-    val joindedData: LiveData<List<UserData>> = _joindedData
+
+
+    private val _joinedActivitiesLiveData = MutableLiveData<List<JoinedActivity>>()
+    val joinedActivitiesLiveData: LiveData<List<JoinedActivity>> = _joinedActivitiesLiveData
+
+
 
     private val activityRepository = ActivityRepository()
     private val userDataRepository = UserDataRepository()
@@ -19,11 +25,11 @@ class DataViewModel : ViewModel() {
         activityRepository.fetchActivity(_activityItemLiveData)
     }
 
-    fun fetchJoinedActivity(){
-        userDataRepository.fetchJoinedActivities(_joindedData)
-    }
-    fun fectchUserData(){
-        activityRepository.fetchActivity(_activityItemLiveData)
+    fun fetchJoinedActivities() {
+        userDataRepository.fetchJoinedActivities(_joinedActivitiesLiveData)
     }
 
+    fun fetchPredictedImages() {
+//        userDataRepository.fetchPredictedImages(joinedActivity)
+    }
 }

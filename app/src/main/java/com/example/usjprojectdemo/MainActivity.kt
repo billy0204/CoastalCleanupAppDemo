@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.usjprojectdemo.Data.DataViewModel
+import com.example.usjprojectdemo.Data.JoinedActivity
 import com.example.usjprojectdemo.Data.UserData
 import com.example.usjprojectdemo.Fragments.CollectionFragment
 import com.example.usjprojectdemo.Fragments.OrganizerFragment
@@ -27,8 +28,8 @@ class MainActivity : AppCompatActivity() {
         val viewModel =ViewModelProvider(this)[DataViewModel::class.java]
 
 
-        viewModel.fetchActivity()
         UserData.user.id ="12121212"
+        viewModel.fetchActivity()
 
         val organizerFragment = OrganizerFragment()
         val scheduleFragment = ScheduleFragment()
@@ -46,8 +47,6 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-
-
 
         makeCurrentFragment(organizerFragment)
     }
