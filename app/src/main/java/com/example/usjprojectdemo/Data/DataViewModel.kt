@@ -17,7 +17,6 @@ class DataViewModel : ViewModel() {
     val joinedActivitiesLiveData: LiveData<List<JoinedActivity>> = _joinedActivitiesLiveData
 
 
-
     private val activityRepository = ActivityRepository()
     private val userDataRepository = UserDataRepository()
 

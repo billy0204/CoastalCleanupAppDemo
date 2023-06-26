@@ -75,18 +75,17 @@ class ScheduleFragment : Fragment(), UserActivityCardAdapter.JoinedChangeListene
         val ref = database.getReference("users").child(UserData.user.id)
             .child("JoinedActivities")
 
-        val listener = ref.addListenerForSingleValueEvent(object : ValueEventListener {
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (snap in snapshot.children) {
                     val joined = snap.getValue(JoinedActivity::class.java)
-                    Log.d("firebasetest", snap.key.toString())
                     if (!exist && joined!!.id == ID) {
                         ref.removeEventListener(this)
                         ref.child(snap.key!!).removeValue()
                         exist = true
                     }
                 }
-                if (exist == false) {
+                if (!exist) {
                     val joined = JoinedActivity()
                     joined.id = ID
                     ref.push().setValue(joined)

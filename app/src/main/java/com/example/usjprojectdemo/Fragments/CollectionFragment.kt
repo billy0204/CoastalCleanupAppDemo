@@ -31,29 +31,35 @@ class CollectionFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_collection, container, false)
 
-        view.findViewById<FloatingActionButton>(R.id.floatingButton).setOnClickListener{
+        view.findViewById<FloatingActionButton>(R.id.floatingButton).setOnClickListener {
             val intent = Intent(getActivity(), ObjectDetectionActivity::class.java)
             startActivity(intent)
         }
 
 
-//        initRecycleView(view)
+        initRecycleView(view)
 
         return view
     }
 
-//    private fun initRecycleView(view: View){
-//        val viewModel = ViewModelProvider(this)[DataViewModel::class.java]
-//        viewModel.fetchActivity()
-//        viewModel.fetchJoinedActivities()
-//
-//        val recyclerView = view.findViewById<RecyclerView>(R.id.recycleView)
-//        Log.d("firebasetest",viewModel.joinedActivities.size.toString())
-//        val adapter = CollectionCardAdapter(viewModel.joinedActivities)
-//        val layoutManager = LinearLayoutManager(context)
-//        recyclerView.layoutManager = layoutManager
-//        recyclerView.adapter = adapter
-//    }
+    private fun initRecycleView(view: View) {
+        val viewModel = ViewModelProvider(this)[DataViewModel::class.java]
+        viewModel.fetchActivity()
+        viewModel.fetchJoinedActivities()
+
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recycleView)
+        val adapter = CollectionCardAdapter(requireContext())
+        val layoutManager = LinearLayoutManager(context)
+        recyclerView.layoutManager = layoutManager
+        recyclerView.adapter = adapter
+
+        viewModel.joinedActivitiesLiveData.observe(viewLifecycleOwner){item->
+            adapter.setJoinedActivities(item)
+        }
+        viewModel.activityItemLiveData.observe(viewLifecycleOwner){item->
+            adapter.setActivityList(item)
+        }
+    }
 
 
 }

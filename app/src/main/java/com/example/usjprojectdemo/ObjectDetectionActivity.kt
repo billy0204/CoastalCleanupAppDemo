@@ -28,6 +28,7 @@ import org.tensorflow.lite.support.image.TensorImage
 import java.io.File
 import java.io.FileOutputStream
 import java.io.NotActiveException
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -103,6 +104,8 @@ class ObjectDetectionActivity : AppCompatActivity(), OnTouchListener, OnClickLis
     private fun takePicture() {
         val fileName = UserData.getRandomId()
         PredictedImage.currentImage = PredictedImage(fileName!!)
+        val sdf = SimpleDateFormat("hh:mm")
+        PredictedImage.currentImage!!.time = sdf.format(Date())
         var fileDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 
 
