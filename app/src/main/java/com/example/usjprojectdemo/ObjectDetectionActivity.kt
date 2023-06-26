@@ -290,6 +290,7 @@ class ObjectDetectionActivity : AppCompatActivity(), OnTouchListener, OnClickLis
             intent.putExtra("bitmap", filePath)
 
             startActivity(intent)
+            finish()
         }
     }
 

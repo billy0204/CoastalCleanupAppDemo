@@ -99,7 +99,7 @@ class OrganizerFragment : Fragment() {
 
     private fun setUpTransformer() {
         val transformer = CompositePageTransformer()
-        transformer.addTransformer(MarginPageTransformer(40))
+        transformer.addTransformer(MarginPageTransformer(30))
         transformer.addTransformer { page, position ->
             val r = 1 - Math.abs(position)
             page.scaleY = 0.85f + (r * 0.15f)

@@ -51,6 +51,7 @@ class ObjectClassificationActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.doneButton)
         button.setOnClickListener {
             uploadClassifyResult()
+            finish()
         }
     }
 
@@ -83,19 +84,6 @@ class ObjectClassificationActivity : AppCompatActivity() {
             }
 
         })
-
-
-//        val fileName = activity?.latitude.toString() + "_" + activity?.longitude
-//        val storage = Firebase.storage
-//        var storageRef = storage.reference
-//        var imagesRef: StorageReference? = storageRef.child("previewMap")
-//            .child(fileName)
-//
-//        val baos = ByteArrayOutputStream()
-//        bitmap?.compress(Bitmap.CompressFormat.PNG, 100, baos)
-//        val fos = this.openFileOutput(fileName, Context.MODE_PRIVATE)
-//        bitmap?.compress(Bitmap.CompressFormat.PNG, 100, fos)
-//        fos.close();
 
         val baos = ByteArrayOutputStream()
         val bitmap = BitmapFactory.decodeFile(filePath)

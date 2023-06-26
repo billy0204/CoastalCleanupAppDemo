@@ -1,9 +1,10 @@
 package com.example.usjprojectdemo.Adapter
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.os.Environment
+import android.graphics.Rect
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.usjprojectdemo.Data.JoinedActivity
+import com.example.usjprojectdemo.Data.PredictedImage
+import com.example.usjprojectdemo.ObjectClassificationActivity
+import com.example.usjprojectdemo.PredictedObjectExhibitActivity
 import com.example.usjprojectdemo.R
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
@@ -19,8 +23,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
-import org.w3c.dom.Text
 import java.io.File
+import java.io.Serializable
 
 class PredictedImageExhibitAdapter(private val joinedActivity: JoinedActivity) :
     RecyclerView.Adapter<PredictedImageExhibitAdapter.ImageCardViewHolder>() {
@@ -37,7 +41,7 @@ class PredictedImageExhibitAdapter(private val joinedActivity: JoinedActivity) :
         val itemView =
             LayoutInflater.from(parent.context)
                 .inflate(R.layout.collected_image_card, parent, false)
-        return PredictedImageExhibitAdapter.ImageCardViewHolder(itemView)
+        return ImageCardViewHolder(itemView)
     }
 
     override fun getItemCount(): Int {
@@ -48,7 +52,12 @@ class PredictedImageExhibitAdapter(private val joinedActivity: JoinedActivity) :
         val currentImage = joinedActivity.images[position]
         setImage(currentImage.fileID, holder)
         holder.timeText.text = currentImage.time
-        holder.descriptionText.text = currentImage.objects.size.toString() + " items\n"+"collected"
+        holder.descriptionText.text =
+            currentImage.objects.size.toString() + " items\n" + "collected"
+
+        holder.itemView.setOnClickListener {
+            exhibitObjects(currentImage)
+        }
     }
 
     private fun setImage(fileName: String, holder: ImageCardViewHolder) {
@@ -57,6 +66,7 @@ class PredictedImageExhibitAdapter(private val joinedActivity: JoinedActivity) :
         if (image.exists()) {
             val fis = context.openFileInput(fileName)
             holder.imageView.setImageBitmap(BitmapFactory.decodeStream(fis))
+            fis.close()
         } else {
             downloadImage(fileName, holder.imageView)
         }
@@ -84,5 +94,19 @@ class PredictedImageExhibitAdapter(private val joinedActivity: JoinedActivity) :
             }
         }
 
+    private fun exhibitObjects(image: PredictedImage) {
+        if (image.objects.size <= 0) return
+        val intent = Intent(context, PredictedObjectExhibitActivity::class.java)
+        val rectList = ArrayList<Rect>()
+        val labelList = ArrayList<String>()
+        for (_object in image.objects) {
+            rectList.add(_object.boundingBox)
+            labelList.add(_object.label)
+        }
+        intent.putExtra("image", image.fileID)
+        intent.putParcelableArrayListExtra("rects", rectList)
+        intent.putExtra("labels", labelList)
+        context.startActivity(intent)
+    }
 
 }
