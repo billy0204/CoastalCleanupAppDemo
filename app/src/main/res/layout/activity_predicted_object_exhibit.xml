@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Green"
-    android:paddingHorizontal="50dp"
+    android:paddingHorizontal="30dp"
     android:paddingBottom="50dp"
     tools:context=".PredictedObjectExhibitActivity">
 
@@ -28,8 +28,8 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="3"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp" />
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

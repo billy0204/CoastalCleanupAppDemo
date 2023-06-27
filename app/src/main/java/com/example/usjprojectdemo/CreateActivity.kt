@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.os.*
 import android.util.Log
 import android.view.View
+import android.view.View.OnClickListener
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,11 +30,12 @@ import java.time.Instant
 import java.util.*
 
 
-class CreateActivity : AppCompatActivity() {
+class CreateActivity : AppCompatActivity(){
 
     private var activity: ActivityItem? = ActivityItem()
     private var macau = LatLng(22.122702855620894, 113.57135407626629)
     private var bitmap: Bitmap? = null
+
 
     private val intent =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -78,6 +80,7 @@ class CreateActivity : AppCompatActivity() {
         val locationEditText = findViewById<EditText>(R.id.locationNameEditText)
         val startingTimeText = findViewById<TextView>(R.id.startText)
         val endTimeText = findViewById<TextView>(R.id.endText)
+        val negativeButton = findViewById<View>(R.id.negativeButton)
 
         activity = ActivityItem(null);
         findViewById<View>(R.id.datePickerButton).setOnClickListener {
@@ -96,6 +99,10 @@ class CreateActivity : AppCompatActivity() {
                     this, MapPicker::class.java
                 )
             )
+        }
+
+        negativeButton.setOnClickListener{
+            finish()
         }
 
 
@@ -196,7 +203,7 @@ class CreateActivity : AppCompatActivity() {
 
         mTimePicker = TimePickerDialog(this, object : TimePickerDialog.OnTimeSetListener {
             override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-                val time: String = String.format("%d : %d", hourOfDay, minute)
+                val time: String = String.format("%2d:%2d", hourOfDay, minute)
                 timeText.text = time
             }
         }, hour, minute, false)

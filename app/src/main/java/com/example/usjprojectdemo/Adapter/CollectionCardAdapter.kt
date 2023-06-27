@@ -72,6 +72,7 @@ class CollectionCardAdapter(private val context:Context) :
                 holder.cardView.setOnClickListener {
                     if (currentActivity.images.size > 0 && holder.expandableCard.visibility == View.GONE) {
                         holder.expandableCard.visibility = View.VISIBLE
+                        holder.expandableCard.requestFocus()
                     } else {
                         holder.expandableCard.visibility = View.GONE
                     }

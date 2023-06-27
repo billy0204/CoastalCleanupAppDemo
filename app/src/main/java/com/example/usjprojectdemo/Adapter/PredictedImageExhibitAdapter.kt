@@ -68,6 +68,7 @@ class PredictedImageExhibitAdapter(private val joinedActivity: JoinedActivity) :
             holder.imageView.setImageBitmap(BitmapFactory.decodeStream(fis))
             fis.close()
         } else {
+            Log.d("downloadTest",fileName)
             downloadImage(fileName, holder.imageView)
         }
     }
@@ -77,7 +78,7 @@ class PredictedImageExhibitAdapter(private val joinedActivity: JoinedActivity) :
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val bytes = FirebaseStorage.getInstance().reference.child("Images/" + fileName)
-                    .getBytes(5L * 1080 * 1920).await()
+                    .getBytes(5L * 1024 * 1024).await()
                 val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
 
 

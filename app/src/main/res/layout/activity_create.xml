@@ -83,6 +83,8 @@
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
                     android:gravity="center_vertical"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"
                     android:hint="@string/ActivityNameInputHint"
                     android:paddingStart="10dp"
                     android:paddingEnd="0dp" />
@@ -265,9 +267,11 @@
                 <EditText
                     android:id="@+id/locationNameEditText"
                     android:layout_width="match_parent"
+                    android:imeOptions="actionDone"
                     android:layout_height="match_parent"
                     android:background="@android:color/transparent"
                     android:gravity="center_vertical"
+                    android:singleLine="true"
                     android:hint="@string/ActivityNameInputHint"
                     android:paddingStart="10dp"
                     android:paddingEnd="0dp" />

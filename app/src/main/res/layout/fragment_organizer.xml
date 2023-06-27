@@ -74,8 +74,8 @@
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/pageForActivityCard"
             android:layout_width="match_parent"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
             android:layout_height="0dp"
             android:layout_marginTop="20dp"
             android:layout_weight="5" />
