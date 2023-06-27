@@ -60,6 +60,7 @@ class ObjectClassificationActivity : AppCompatActivity() {
 
         val button = findViewById<Button>(R.id.doneButton)
         button.setOnClickListener {
+            button.isClickable = false
             uploadClassifyResult()
             finish()
         }
@@ -112,7 +113,6 @@ class ObjectClassificationActivity : AppCompatActivity() {
         fos.close();
 
 
-        //TODO: wrong path to upload image
         var imagesRef: StorageReference? = Firebase.storage.reference.child("Images")
             .child(PredictedImage.currentImage!!.fileID)
         bitmap.compress(Bitmap.CompressFormat.PNG, 75, baos)
@@ -121,7 +121,7 @@ class ObjectClassificationActivity : AppCompatActivity() {
         uploadTask?.addOnFailureListener {
             // Handle unsuccessful uploads
         }?.addOnSuccessListener { taskSnapshot ->
-            Log.d("demo", "success uploaded")
+            baos.close()
         }
 
 
