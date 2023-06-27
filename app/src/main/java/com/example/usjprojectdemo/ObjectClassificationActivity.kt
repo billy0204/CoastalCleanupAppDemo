@@ -65,7 +65,7 @@ class ObjectClassificationActivity : AppCompatActivity() {
             finish()
         }
     }
-
+    //test update
     private fun setUpTransformer() {
         val transformer = CompositePageTransformer()
         transformer.addTransformer(MarginPageTransformer(20))
