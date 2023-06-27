@@ -44,6 +44,7 @@ class ObjectDetectionActivity : AppCompatActivity(), OnTouchListener, OnClickLis
     private val paint = Paint()
     private lateinit var size: Point;
     private lateinit var filePath: String;
+    private var drawing = false
 
     init {
         paint.color = Color.RED
@@ -184,6 +185,8 @@ class ObjectDetectionActivity : AppCompatActivity(), OnTouchListener, OnClickLis
     }
 
     private fun drawToTempView() {
+        if (!drawing) return
+
         if (tempBitmap == null) {
             tempBitmap = Bitmap.createBitmap(
                 size.x,
@@ -279,13 +282,20 @@ class ObjectDetectionActivity : AppCompatActivity(), OnTouchListener, OnClickLis
 
     override fun onClick(view: View?) {
         if (view!!.id == R.id.okButton) {
-            drawToImage()
-            clearTempView()
+            val button = view as Button
+            if (!drawing) {
+                drawing = true
+                button.text = "Draw to picture"
+            } else {
+                drawToImage()
+                clearTempView()
+                drawing = false
+                button.text = "Add object"
+            }
 
         } else if (view!!.id == R.id.nextButton) {
 
             val intent = Intent(this, ObjectClassificationActivity::class.java)
-
             intent.putParcelableArrayListExtra("detectedRectangles", detectedObjects)
             intent.putExtra("bitmap", filePath)
 
