@@ -31,11 +31,6 @@ class CollectionFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_collection, container, false)
 
-        view.findViewById<FloatingActionButton>(R.id.floatingButton).setOnClickListener {
-            val intent = Intent(getActivity(), ObjectDetectionActivity::class.java)
-            startActivity(intent)
-        }
-
 
         initRecycleView(view)
 
@@ -48,7 +43,7 @@ class CollectionFragment : Fragment() {
         viewModel.fetchJoinedActivities()
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recycleView)
-        val adapter = CollectionCardAdapter(requireContext())
+        val adapter = CollectionCardAdapter(requireActivity())
         val layoutManager = LinearLayoutManager(context)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter

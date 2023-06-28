@@ -12,7 +12,7 @@ data class UserData(
 ){
     companion object{
         var user:UserData = UserData()
-        val currentActivityID:String = "-NYpFFh-pIhg9SHLz3E7";
+        var currentActivityID:String = "";
         var randomID = getRandomId()
         fun getRandomId(): String? {
             val userRef = Firebase.database.getReference("users").child(user.id).child("JoinedActivity").child(UserData.currentActivityID)

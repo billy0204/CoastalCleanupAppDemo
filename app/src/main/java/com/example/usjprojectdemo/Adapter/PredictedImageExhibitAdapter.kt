@@ -1,5 +1,6 @@
 package com.example.usjprojectdemo.Adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -11,7 +12,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.usjprojectdemo.Data.ActivityItem
 import com.example.usjprojectdemo.Data.JoinedActivity
 import com.example.usjprojectdemo.Data.PredictedImage
 import com.example.usjprojectdemo.ObjectClassificationActivity
@@ -26,9 +29,10 @@ import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.Serializable
 
-class PredictedImageExhibitAdapter(private val joinedActivity: JoinedActivity) :
+class PredictedImageExhibitAdapter() :
     RecyclerView.Adapter<PredictedImageExhibitAdapter.ImageCardViewHolder>() {
     lateinit var context: Context
+    private var joinedActivity: JoinedActivity = JoinedActivity()
 
     class ImageCardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val imageView: ImageView = itemView.findViewById(R.id.imageView)
@@ -48,6 +52,12 @@ class PredictedImageExhibitAdapter(private val joinedActivity: JoinedActivity) :
         return joinedActivity.images.size
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun setCurrentActivity(joinedActivity: JoinedActivity) {
+        this.joinedActivity = joinedActivity
+        notifyDataSetChanged()
+    }
+
     override fun onBindViewHolder(holder: ImageCardViewHolder, position: Int) {
         val currentImage = joinedActivity.images[position]
         setImage(currentImage.fileID, holder)
@@ -56,7 +66,11 @@ class PredictedImageExhibitAdapter(private val joinedActivity: JoinedActivity) :
             currentImage.objects.size.toString() + " items\n" + "collected"
 
         holder.itemView.setOnClickListener {
-            exhibitObjects(currentImage)
+            if(holder.imageView.drawable !=null){
+                exhibitObjects(currentImage)
+            }else{
+                Toast.makeText(context,"Image is loading",Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -68,7 +82,7 @@ class PredictedImageExhibitAdapter(private val joinedActivity: JoinedActivity) :
             holder.imageView.setImageBitmap(BitmapFactory.decodeStream(fis))
             fis.close()
         } else {
-            Log.d("downloadTest",fileName)
+            Log.d("downloadTest", fileName)
             downloadImage(fileName, holder.imageView)
         }
     }

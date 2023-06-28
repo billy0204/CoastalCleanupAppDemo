@@ -1,21 +1,27 @@
 package com.example.usjprojectdemo.Adapter
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.LayoutManager
+import com.example.usjprojectdemo.CurrentActivity
 import com.example.usjprojectdemo.Data.ActivityItem
 import com.example.usjprojectdemo.Data.JoinedActivity
+import com.example.usjprojectdemo.ObjectClassificationActivity
 import com.example.usjprojectdemo.R
 
-class CollectionCardAdapter(private val context:Context) :
+class CollectionCardAdapter(private val context: Context) :
     RecyclerView.Adapter<CollectionCardAdapter.CollectionCardViewHolder>() {
     private val joinedActivities = mutableListOf<JoinedActivity>()
     private val activityList = mutableListOf<ActivityItem>()
@@ -26,8 +32,6 @@ class CollectionCardAdapter(private val context:Context) :
         val time: TextView = itemView.findViewById(R.id.timeText)
         val date: TextView = itemView.findViewById(R.id.dateText)
         val cardView: View = itemView
-        val expandableCard: View = itemView.findViewById(R.id.expandableCard)
-        val recycleView: RecyclerView = itemView.findViewById(R.id.recycleView)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CollectionCardViewHolder {
@@ -64,18 +68,14 @@ class CollectionCardAdapter(private val context:Context) :
                 holder.time.text = activity.starting_time + "~" + activity.end_time
                 holder.date.text = activity.date
 
-                val adapter = PredictedImageExhibitAdapter(currentActivity)
-                holder.recycleView.layoutManager = LinearLayoutManager(context)
-                holder.recycleView.adapter =adapter
-
 
                 holder.cardView.setOnClickListener {
-                    if (currentActivity.images.size > 0 && holder.expandableCard.visibility == View.GONE) {
-                        holder.expandableCard.visibility = View.VISIBLE
-                        holder.expandableCard.requestFocus()
-                    } else {
-                        holder.expandableCard.visibility = View.GONE
-                    }
+                    val intent = Intent(context, CurrentActivity::class.java)
+                    intent.putExtra("position", position)
+                    intent.putExtra("id", activity.id)
+                    intent.putExtra("title",activity.activity_name)
+
+                    context.startActivity(intent)
                 }
             }
         }
