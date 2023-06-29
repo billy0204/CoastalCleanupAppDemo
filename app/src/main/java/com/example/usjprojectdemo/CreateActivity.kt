@@ -5,14 +5,17 @@ import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.*
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import android.view.View.OnClickListener
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.TimePicker
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -21,21 +24,27 @@ import com.example.usjprojectdemo.Data.UserData
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
+import org.w3c.dom.Text
 import java.io.ByteArrayOutputStream
+import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
-import java.time.Instant
 import java.util.*
 
 
-class CreateActivity : AppCompatActivity(){
+class CreateActivity : AppCompatActivity() {
 
     private var activity: ActivityItem? = ActivityItem()
     private var macau = LatLng(22.122702855620894, 113.57135407626629)
     private var bitmap: Bitmap? = null
-
 
     private val intent =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -75,12 +84,52 @@ class CreateActivity : AppCompatActivity(){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create)
 
-
         val activityEditText = findViewById<EditText>(R.id.activityNameEditText)
         val locationEditText = findViewById<EditText>(R.id.locationNameEditText)
         val startingTimeText = findViewById<TextView>(R.id.startText)
         val endTimeText = findViewById<TextView>(R.id.endText)
         val negativeButton = findViewById<View>(R.id.negativeButton)
+        val previewMap = findViewById<ImageView>(R.id.previewMap)
+        val dateText = findViewById<TextView>(R.id.dateTextView)
+        val markerIcon = findViewById<View>(R.id.locationMarker)
+
+
+        val extras = getIntent().extras
+        val id = extras?.getString("id")
+
+        if (id != null) {
+            activity?.id = id
+
+            findViewById<Button>(R.id.positiveButton).text = "Save"
+
+            activityEditText.setText(extras?.getString("title"))
+            locationEditText.setText(extras?.getString("location"))
+            startingTimeText.text = extras?.getString("start")
+            endTimeText.text = extras?.getString("end")
+            dateText.text = extras?.getString("date")
+            markerIcon.visibility = View.GONE
+
+            activity!!.latitude = extras?.getDouble("lat")!!
+            activity!!.longitude = extras?.getDouble("lng")!!
+
+
+            val fileName = "${activity!!.latitude.toString() + "_" + activity!!.longitude}"
+
+            val path: String =getFilesDir().toString() + "/"
+            val image = File(path + fileName)
+            if (image.exists()) {
+                val fis = openFileInput(fileName)
+                previewMap.setImageBitmap(BitmapFactory.decodeStream(fis))
+            } else {
+                downloadImage(fileName, previewMap)
+            }
+
+        }else{
+            activity?.id = UserData.getRandomId()
+        }
+
+
+
 
         activity = ActivityItem(null);
         findViewById<View>(R.id.datePickerButton).setOnClickListener {
@@ -101,18 +150,20 @@ class CreateActivity : AppCompatActivity(){
             )
         }
 
-        negativeButton.setOnClickListener{
+        negativeButton.setOnClickListener {
             finish()
         }
 
 
         findViewById<View>(R.id.positiveButton).setOnClickListener() {
-            activity!!.activity_name = activityEditText.text.toString()
-            activity!!.location_name = locationEditText.text.toString()
-            activity!!.starting_time = startingTimeText.text.toString()
-            activity!!.end_time = endTimeText.text.toString()
+            if (nullChecker()) {
+                activity!!.activity_name = activityEditText.text.toString()
+                activity!!.location_name = locationEditText.text.toString()
+                activity!!.starting_time = startingTimeText.text.toString()
+                activity!!.end_time = endTimeText.text.toString()
+                saveActivity()
+            }
 
-            saveActivity()
         }
     }
 
@@ -120,7 +171,8 @@ class CreateActivity : AppCompatActivity(){
     private fun saveActivity() {
         val database = FirebaseDatabase.getInstance()
         val myRef = database.getReference("ISE")
-        activity?.id = UserData.getRandomId()
+
+
         myRef.child(activity?.id.toString())
             .setValue(activity)
 
@@ -203,7 +255,7 @@ class CreateActivity : AppCompatActivity(){
 
         mTimePicker = TimePickerDialog(this, object : TimePickerDialog.OnTimeSetListener {
             override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
-                val time: String = String.format("%2d:%2d", hourOfDay, minute)
+                val time: String = String.format("%02d:%02d", hourOfDay, minute)
                 timeText.text = time
             }
         }, hour, minute, false)
@@ -211,4 +263,73 @@ class CreateActivity : AppCompatActivity(){
         mTimePicker.show()
     }
 
+    private fun nullChecker(): Boolean {
+
+
+        val activityEditText = findViewById<EditText>(R.id.activityNameEditText)
+        val locationEditText = findViewById<EditText>(R.id.locationNameEditText)
+        val previewMap = findViewById<ImageView>(R.id.previewMap)
+        val dateText = findViewById<TextView>(R.id.dateTextView)
+
+
+        if (TextUtils.isEmpty(activityEditText.text)) {
+            activityEditText.error = "Activity name can not be empty";
+            activityEditText.requestFocus()
+            return false
+        } else {
+            activityEditText.error = null;
+        }
+
+        if (TextUtils.isEmpty(locationEditText.text)) {
+            locationEditText.error = "Location can not be empty";
+            locationEditText.requestFocus()
+            return false
+        } else {
+            locationEditText.error = null;
+        }
+
+
+        if (TextUtils.isEmpty(locationEditText.text)) {
+            locationEditText.error = "Location can not be empty";
+            locationEditText.requestFocus()
+            return false
+        } else {
+            locationEditText.error = null;
+        }
+
+        if (previewMap.drawable == null) {
+            Toast.makeText(this, "Please pick the location on map", Toast.LENGTH_LONG).show()
+            previewMap.requestFocus()
+            return false
+        }
+
+        if (TextUtils.isEmpty(dateText.text)) {
+            Toast.makeText(this, "Please pick date of activity", Toast.LENGTH_LONG).show()
+            showDatePicker()
+            return false
+        }
+
+        return true
+    }
+
+    private fun downloadImage(fileName: String, previewMap: ImageView) =
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val bytes = FirebaseStorage.getInstance().reference.child("previewMap/" + fileName)
+                    .getBytes(5L * 1024 * 1024).await()
+                val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+
+
+                val fos = openFileOutput(fileName, Context.MODE_PRIVATE)
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+                fos.close();
+
+                withContext(Dispatchers.Main) {
+                    previewMap.setImageBitmap(bitmap)
+                }
+
+            } catch (e: java.lang.Exception) {
+                Log.d("demo", e.toString())
+            }
+        }
 }

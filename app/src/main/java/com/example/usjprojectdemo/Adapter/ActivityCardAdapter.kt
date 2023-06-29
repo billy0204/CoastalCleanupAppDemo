@@ -2,17 +2,24 @@ package com.example.usjprojectdemo.Adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.usjprojectdemo.CreateActivity
+import com.example.usjprojectdemo.CurrentActivity
 import com.example.usjprojectdemo.Data.ActivityItem
 import com.example.usjprojectdemo.R
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +37,8 @@ class ActivityCardAdapter(private val context: Context) :
         val title: TextView = itemView.findViewById(R.id.titleText)
         val location: TextView = itemView.findViewById(R.id.locationText)
         val time: TextView = itemView.findViewById(R.id.timeText)
-
+        val editButton:Button = itemView.findViewById(R.id.editButton)
+        val deleteButton:Button = itemView.findViewById(R.id.deleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ActivityCardHolder {
@@ -65,11 +73,30 @@ class ActivityCardAdapter(private val context: Context) :
         if (image.exists()) {
             val fis = context.openFileInput(fileName)
             holder.previewMap.setImageBitmap(BitmapFactory.decodeStream(fis))
-            Log.d("demo", "exits")
         } else {
             downloadImage(fileName, holder.previewMap)
         }
 
+
+        holder.editButton.setOnClickListener{
+            val intent = Intent(context, CreateActivity::class.java)
+            intent.putExtra("id", activity.id)
+            intent.putExtra("date",activity.date)
+            intent.putExtra("title",activity.activity_name)
+            intent.putExtra("start",activity.starting_time)
+            intent.putExtra("end",activity.end_time)
+            intent.putExtra("location",activity.location_name)
+            intent.putExtra("lat",activity.latitude)
+            intent.putExtra("lng",activity.longitude)
+            context.startActivity(intent)
+        }
+
+        holder.deleteButton.setOnClickListener {
+            val database = FirebaseDatabase.getInstance()
+            val myRef = database.getReference("ISE")
+            myRef.child(activity.id.toString())
+                .removeValue()
+        }
 
     }
 

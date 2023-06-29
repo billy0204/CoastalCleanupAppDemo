@@ -132,6 +132,9 @@ class ObjectDetectionActivity : AppCompatActivity(), OnTouchListener, OnClickLis
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 100 && resultCode == RESULT_OK) {
             bitmap = checkPictureRotation(filePath)
+//            //TODO: for interface show case
+//            bitmap = BitmapFactory.decodeResource(resources, R.drawable.demopic08)
+
             bitmap = resizeBitmap(bitmap!!)
             bitmap = Bitmap.createScaledBitmap(bitmap!!, size.x, size.y, false)
             FileOutputStream(filePath).use { out ->

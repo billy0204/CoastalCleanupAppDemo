@@ -24,9 +24,6 @@ class OrganizerFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-
-        }
         viewModel = ViewModelProvider(requireActivity())[DataViewModel::class.java]
         viewModel.fetchActivity()
     }
@@ -46,27 +43,9 @@ class OrganizerFragment : Fragment() {
     }
 
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment Organizer.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) = OrganizerFragment().apply {
-            arguments = Bundle().apply {
-
-            }
-        }
-    }
-
 
     private fun createActivity() {
-        val intent = Intent(getActivity(), CreateActivity::class.java)
+        val intent = Intent(activity, CreateActivity::class.java)
         startActivity(intent)
     }
 

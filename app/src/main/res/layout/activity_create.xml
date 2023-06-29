@@ -43,13 +43,24 @@
                     android:src="@drawable/ise_logo"
                     app:shapeAppearanceOverlay="@style/Circular" />
 
-                <com.google.android.material.imageview.ShapeableImageView
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_marginStart="5dp"
                     android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginStart="10dp"
-                    android:src="@color/white"
-                    app:shapeAppearanceOverlay="@style/Circular" />
+                    android:layout_height="50dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:src="@color/white"
+                        app:shapeAppearanceOverlay="@style/Circular" />
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/baseline_add_24"
+                       />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
             </LinearLayout>
 
         </LinearLayout>
@@ -347,51 +358,27 @@
             android:layout_height="60dp"
             android:layout_marginTop="20dp">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/negativeButton"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:backgroundTint="@color/lightGreen"
-                app:cardCornerRadius="10dp"
-                app:strokeColor="@color/DarkBlue"
-                app:strokeWidth="1dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/cancelButtonText"
-                    android:textAlignment="center"
-                    android:textColor="@color/DarkBlue"
-                    android:textStyle="bold" />
-
-            </com.google.android.material.card.MaterialCardView>
-
+           <Button
+               android:id="@+id/negativeButton"
+               android:layout_width="0dp"
+               android:layout_height="match_parent"
+               android:layout_weight="1"
+               android:text="cancel"
+               android:background="@drawable/joined_button"/>
             <View
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.3" />
 
-            <com.google.android.material.card.MaterialCardView
+            <Button
                 android:id="@+id/positiveButton"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:backgroundTint="@color/DarkBlue"
-                app:cardCornerRadius="10dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:text="@string/createButtonText"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-
-            </com.google.android.material.card.MaterialCardView>
-
+                android:background="@drawable/join_button"
+                android:text="save"
+                android:textColor="@color/white"
+                />
 
         </LinearLayout>
     </LinearLayout>

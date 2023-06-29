@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:text="The university of saint joseph"
+                android:text="The University of Saint Joseph"
                 android:textColor="@color/white" />
 
             <View

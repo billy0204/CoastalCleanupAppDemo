@@ -63,7 +63,7 @@ class PredictedImageExhibitAdapter() :
         setImage(currentImage.fileID, holder)
         holder.timeText.text = currentImage.time
         holder.descriptionText.text =
-            currentImage.objects.size.toString() + " items\n" + "collected"
+            currentImage.objects.size.toString() + " item\n" + "collected"
 
         holder.itemView.setOnClickListener {
             if(holder.imageView.drawable !=null){
